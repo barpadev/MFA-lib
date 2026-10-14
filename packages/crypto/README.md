@@ -1,8 +1,8 @@
-# @themystery/crypto
+# @crypto/Barpa-MFA
 
 Version `0.1.0`. Apache-2.0. The licence text is [`LICENSE`](LICENSE) in this package, copied from the repository root.
 
-This is a library for developers. It wraps WebCrypto for TOTP, HOTP, a PIN-wrapped vault, and a seed-wrapped backup. It has no UI, no network calls, and no runtime dependencies. `@themystery/totp` depends on `workspace:^0.1.0` and imports this package. It does not copy these algorithms.
+This is a library for developers. It wraps WebCrypto for TOTP, HOTP, a PIN-wrapped vault, and a seed-wrapped backup. It has no UI, no network calls, and no runtime dependencies. `@crypto/Barpa-totp` depends on `workspace:^0.1.0` and imports this package. It does not copy these algorithms.
 
 While the major version is 0, a new minor version may change the API. A patch stays compatible. There is no independent audit of this package.
 
@@ -13,7 +13,7 @@ From this repository:
 ```json
 {
   "dependencies": {
-    "@themystery/crypto": "workspace:^0.1.0"
+    "@crypto/Barpa-MFA": "workspace:^0.1.0"
   }
 }
 ```
@@ -23,10 +23,10 @@ Outside the repository, build the tarball and add that file:
 ```bash
 pnpm --dir packages/crypto build
 pnpm --dir packages/crypto pack
-pnpm add ./packages/crypto/themystery-crypto-0.1.0.tgz
+pnpm add ./packages/crypto/crypto-Barpa-MFA-0.1.0.tgz
 ```
 
-The public entry is the package root. Import from `@themystery/crypto`. The published files are `dist/`, this README, and `LICENSE`.
+The public entry is the package root. Import from `@crypto/Barpa-MFA`. The published files are `dist/`, this README, and `LICENSE`.
 
 Node.js 22 or newer. The runtime is `globalThis.crypto` (WebCrypto). `totp` does not read the clock. Pass the Unix seconds yourself.
 
@@ -37,7 +37,7 @@ Node.js 22 or newer. The runtime is `globalThis.crypto` (WebCrypto). `totp` does
 `totp` and `hotp` return a zero-padded decimal string. The algorithm is `SHA1`, `SHA256`, or `SHA512`. Digits are 6 or 8. A failure is `invalid secret`, `invalid period`, `invalid counter`, or `invalid otp`. The message does not include the secret or the code.
 
 ```ts
-import { parseOtpauth, totp } from "@themystery/crypto";
+import { parseOtpauth, totp } from "@crypto/Barpa-MFA";
 
 const parsed = parseOtpauth(uri);
 if (parsed.type !== "totp") {

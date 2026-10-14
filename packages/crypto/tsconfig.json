@@ -1,5 +1,5 @@
 {
-  "extends": "@themystery/config/tsconfig/node.json",
+  "extends": "@crypto/Barpa-config/tsconfig/node.json",
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "erasableSyntaxOnly": true

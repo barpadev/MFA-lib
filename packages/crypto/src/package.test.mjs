@@ -39,7 +39,7 @@ const runtimeExports = [
 ];
 
 test("the package is version 0.1.0 and publishes the built entry", () => {
-  assert.equal(manifest.name, "@themystery/crypto");
+  assert.equal(manifest.name, "@crypto/Barpa-MFA");
   assert.equal(manifest.version, "0.1.0");
   assert.equal(manifest.license, "Apache-2.0");
   assert.equal(manifest.private, undefined);
@@ -52,9 +52,9 @@ test("the package is version 0.1.0 and publishes the built entry", () => {
 
 test("a stranger can follow the README", () => {
   assert.match(readme, /workspace:\^0\.1\.0/);
-  assert.match(readme, /pnpm add \.\/packages\/crypto\/themystery-crypto-0\.1\.0\.tgz/);
+  assert.match(readme, /pnpm add \.\/packages\/crypto\/crypto-Barpa-MFA-0\.1\.0\.tgz/);
   assert.match(readme, /parseOtpauth/);
-  assert.match(readme, /from "@themystery\/crypto"/);
+  assert.match(readme, /from "@crypto\/Barpa-MFA"/);
   assert.match(architecture, /0\.1\.0/);
   assert.doesNotMatch(readme, /otpauth:\/\/|secret=|mnemonic:/i);
 });

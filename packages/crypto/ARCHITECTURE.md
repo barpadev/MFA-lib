@@ -1,16 +1,16 @@
 # packages/crypto — Architecture
 
-Business rules for `@themystery/crypto` 0.1.0. Root `ARCHITECTURE.md` wins on conflict.
+Business rules for `@crypto/Barpa-MFA` 0.1.0. Root `ARCHITECTURE.md` wins on conflict.
 
 ## 1. Mission
 
-This package is the versioned open-core library. Developers consume it. It is not an app and not a service. `@themystery/totp` is the consumer in this repository. `apps/passkey` may import it as a test harness. That harness is not this package's supported product consumer.
+This package is the versioned open-core library. Developers consume it. It is not an app and not a service. `@crypto/Barpa-totp` is the consumer in this repository. `apps/passkey` may import it as a test harness. That harness is not this package's supported product consumer.
 
 ## 2. What ships
 
 The package version is `0.1.0`, licence Apache-2.0. `pnpm build` writes `dist/` from `src/` and copies the repository `LICENSE` next to this file. `package.json` `exports` point at `dist/index.js` and `dist/index.d.ts`. Tests stay on the TypeScript sources and run with Node's type stripper. There are no runtime dependencies.
 
-While the major version is 0, a minor bump may change the public entry. A patch does not. `@themystery/totp` depends on `workspace:^0.1.0`.
+While the major version is 0, a minor bump may change the public entry. A patch does not. `@crypto/Barpa-totp` depends on `workspace:^0.1.0`.
 
 The public entry is the names re-exported from `src/index.ts`:
 

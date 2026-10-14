@@ -1,4 +1,4 @@
-import { createConfig } from "@themystery/config/eslint";
+import { createConfig } from "@crypto/Barpa-config/eslint";
 
 export default createConfig({
   typeChecked: true,
