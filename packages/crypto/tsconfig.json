@@ -1,0 +1,8 @@
+{
+  "extends": "@themystery/config/tsconfig/node.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true
+  },
+  "include": ["src/**/*.ts"]
+}
