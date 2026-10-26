@@ -58,6 +58,8 @@ Replay prevention stays with the server that checks the code.
 
 `createVault` seals plaintext with a PIN of 4 to 8 digits. The KDF is PBKDF2-HMAC-SHA-256, 600,000 iterations, unless the caller passes another count inside 1,000–1,000,000. The vault key is AES-GCM-256, wrapped with AES-KW, and is not extractable. `openVault`, `sealVault`, and `rewrapVault` use that same record. A failure is `invalid request`.
 
+`createDeviceVault` seals plaintext under a non-extractable AES-GCM key with no PIN. Use it when the host must persist accounts without a user unlock. `openDeviceVault` and `sealDeviceVault` use that same record.
+
 `createBackup` seals plaintext under a new 12-word BIP-39 mnemonic and returns the phrase once. The blob uses PBKDF2-HMAC-SHA-512, salt `mnemonic`, 2048 iterations. `openBackup` decrypts with the phrase. The phrase is not a field of the blob.
 
 ## Other exports

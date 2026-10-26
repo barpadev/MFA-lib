@@ -2,7 +2,16 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { utf8ToBytes } from "./buffer.ts";
-import { createVault, openVault, rewrapVault, sealVault, vaultPbkdf2Iterations } from "./vault.ts";
+import {
+  createDeviceVault,
+  createVault,
+  openDeviceVault,
+  openVault,
+  rewrapVault,
+  sealDeviceVault,
+  sealVault,
+  vaultPbkdf2Iterations,
+} from "./vault.ts";
 
 const now = new Date("2026-10-11T08:00:00.000Z");
 const rounds = 1_000;
@@ -67,4 +76,27 @@ void test("sealing keeps the wrap and rewrapping drops the old PIN", async () =>
   assert.equal(new TextDecoder().decode(restored.plaintext), "two");
   opened.plaintext.fill(0);
   restored.plaintext.fill(0);
+});
+
+void test("a device vault round-trips under a non-extractable key with no PIN", async () => {
+  const plaintext = utf8ToBytes("device-secret");
+  const created = await createDeviceVault(plaintext, now);
+  assert.equal(created.key.extractable, false);
+  assert.equal(created.version, 1);
+  assert.equal(created.cipher, "AES-GCM");
+  assert.equal(created.iv.byteLength, 12);
+  await assert.rejects(crypto.subtle.exportKey("raw", created.key));
+  const opened = await openDeviceVault(created);
+  assert.deepEqual([...opened], [...plaintext]);
+  opened.fill(0);
+  const later = new Date("2026-10-11T09:00:00.000Z");
+  const sealed = await sealDeviceVault(created, utf8ToBytes("device-two"), later);
+  assert.equal(sealed.id, created.id);
+  assert.equal(sealed.updatedAt, "2026-10-11T09:00:00.000Z");
+  const again = await openDeviceVault(sealed);
+  assert.equal(new TextDecoder().decode(again), "device-two");
+  again.fill(0);
+  const flipped = new Uint8Array(sealed.ciphertext);
+  flipped[0] = (flipped[0] ?? 0) ^ 0xff;
+  await assert.rejects(openDeviceVault({ ...sealed, ciphertext: flipped }), /invalid request/);
 });

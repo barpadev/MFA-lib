@@ -7,8 +7,17 @@ export { hotp, totp } from "./otp.ts";
 export type { OtpOptions, TotpOptions } from "./otp.ts";
 export { parseOtpauth } from "./otpauth.ts";
 export type { HotpAuth, OtpAlgorithm, Otpauth, TotpAuth } from "./otpauth.ts";
-export { createVault, openVault, rewrapVault, sealVault, vaultPbkdf2Iterations } from "./vault.ts";
-export type { OpenVault, SealedVault } from "./vault.ts";
+export {
+  createDeviceVault,
+  createVault,
+  openDeviceVault,
+  openVault,
+  rewrapVault,
+  sealDeviceVault,
+  sealVault,
+  vaultPbkdf2Iterations,
+} from "./vault.ts";
+export type { DeviceSealedVault, OpenVault, SealedVault } from "./vault.ts";
 export {
   base64UrlToBytes,
   bytesToBase64Url,

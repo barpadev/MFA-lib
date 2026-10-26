@@ -15,7 +15,7 @@ While the major version is 0, a minor bump may change the public entry. A patch 
 The public entry is the names re-exported from `src/index.ts`:
 
 - Codes: `parseOtpauth`, `totp`, `hotp`.
-- Vault: `createVault`, `openVault`, `sealVault`, `rewrapVault`, `vaultPbkdf2Iterations`.
+- Vault: `createVault`, `openVault`, `sealVault`, `rewrapVault`, `createDeviceVault`, `openDeviceVault`, `sealDeviceVault`, `vaultPbkdf2Iterations`.
 - Backup: `createBackup`, `openBackup`, `encodeMnemonic`, `backupPbkdf2Iterations`.
 - Challenge: `createChallenge`.
 - Bytes: Base32, hex, unpadded base64url, UTF-8, `concatBytes`, `constantTimeEqual`, `randomBytes`.
@@ -30,7 +30,9 @@ The public entry is the names re-exported from `src/index.ts`:
 
 ## 4. Vault
 
-Format version is 1. The PIN is 4–8 digits. The KDF is PBKDF2-HMAC-SHA-256. The default is 600,000 iterations. A caller-supplied count must be an integer from 1,000 through 1,000,000. WebCrypto has no Argon2id, so PBKDF2 stays inside the audited primitive set. The vault key is AES-GCM-256. AES-KW wraps it. The key returned by create, open, or rewrap has `extractable: false`. Payload encryption uses a 12-byte IV and additional data bound to the vault id and format version. A failed open is `invalid request`. This package does not write IndexedDB and does not call `exportKey`.
+Format version is 1. The PIN is 4–8 digits. The KDF is PBKDF2-HMAC-SHA-256. The default is 600,000 iterations. A caller-supplied count must be an integer from 1,000 through 1,000,000. WebCrypto has no Argon2id, so PBKDF2 stays inside the audited primitive set. The vault key is AES-GCM-256. AES-KW wraps it. The key returned by create, open, or rewrap has `extractable: false`. Payload encryption uses a 12-byte IV and additional data bound to the vault id and format version. A failed open is `invalid request`.
+
+`createDeviceVault` seals plaintext under a non-extractable AES-GCM-256 key with no PIN. `openDeviceVault` and `sealDeviceVault` use that same record. Callers that persist the record (for example in IndexedDB) must keep the CryptoKey; this package does not write storage and does not call `exportKey`.
 
 ## 5. Backup
 

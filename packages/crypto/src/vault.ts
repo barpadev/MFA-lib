@@ -275,3 +275,84 @@ export async function rewrapVault(
     key: minted.key,
   };
 }
+
+/** Device-bound vault: ciphertext plus a non-extractable AES-GCM key (no user PIN). */
+export interface DeviceSealedVault {
+  id: string;
+  version: number;
+  cipher: "AES-GCM";
+  iv: Uint8Array;
+  ciphertext: Uint8Array;
+  key: VaultKey;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function readDeviceSealed(sealed: {
+  readonly id: string;
+  readonly version: number;
+  readonly cipher: string;
+  readonly iv: Uint8Array;
+  readonly key: VaultKey;
+}): void {
+  if (sealed.version !== formatVersion || sealed.cipher !== "AES-GCM" || sealed.id.length === 0) {
+    return invalid();
+  }
+  if (sealed.iv.byteLength !== 12 || sealed.key.extractable || sealed.key.algorithm.name !== "AES-GCM") {
+    return invalid();
+  }
+}
+
+export async function createDeviceVault(
+  plaintext: Uint8Array,
+  now: Date,
+): Promise<DeviceSealedVault> {
+  const createdAt = stamp(now);
+  const id = bytesToHex(randomBytes(16));
+  const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+  const payload = await encryptPayload(id, key, plaintext);
+  return {
+    id,
+    version: formatVersion,
+    cipher: "AES-GCM",
+    iv: payload.iv,
+    ciphertext: payload.ciphertext,
+    key,
+    createdAt,
+    updatedAt: createdAt,
+  };
+}
+
+export async function sealDeviceVault(
+  sealed: DeviceSealedVault,
+  plaintext: Uint8Array,
+  now: Date,
+): Promise<DeviceSealedVault> {
+  readDeviceSealed(sealed);
+  const payload = await encryptPayload(sealed.id, sealed.key, plaintext);
+  return {
+    ...sealed,
+    iv: payload.iv,
+    ciphertext: payload.ciphertext,
+    updatedAt: stamp(now),
+  };
+}
+
+export async function openDeviceVault(sealed: DeviceSealedVault): Promise<Uint8Array> {
+  readDeviceSealed(sealed);
+  try {
+    return new Uint8Array(
+      await crypto.subtle.decrypt(
+        {
+          name: "AES-GCM",
+          iv: copyBytes(sealed.iv),
+          additionalData: copyBytes(associated(sealed.id, sealed.version)),
+        },
+        sealed.key,
+        copyBytes(sealed.ciphertext),
+      ),
+    );
+  } catch {
+    return invalid();
+  }
+}
